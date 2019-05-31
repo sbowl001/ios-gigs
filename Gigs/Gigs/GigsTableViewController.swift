@@ -10,77 +10,79 @@ import UIKit
 
 class GigsTableViewController: UITableViewController {
 
+    private var gigs : [String] = []
+    
+    let gigController = GigController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-      
+        tableView.reloadData()
+    }
+ 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if self.gigController.bearer == nil {
+            performSegue(withIdentifier: "PresentLogIn", sender: self)
+        }  else {
+            gigController.getAllGigs { (array) in
+                DispatchQueue.main.async {
+                    self.gigs = array
+                    self.tableView.reloadData()
+             }
+            }
+        }
     }
 
     // MARK: - Table view data source
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
-    }
+ 
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+ 
+        return gigs.count
     }
 
-    /*
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "GigCell", for: indexPath)
 
-        // Configure the cell...
-
+        let df = DateFormatter()
+        df.dateStyle = .short
+        cell.textLabel?.text = gigController.gigs[indexPath.row].title
+        cell.detailTextLabel?.text = df.string(from: gigController.gigs[indexPath.row].dueDate)
         return cell
     }
-    */
 
     /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
+     Implement cellForRowAt using the same array of Gigs to get the gig that corresponds to the cell being set up in this method. The cell's text label should show the gig's title. Use a DateFormatter to take the Gig's dueDate property and make it into a more user-friendly readable string and place it in the detail text label of the cell.
+     */
 
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
+ 
 
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
 
-    }
-    */
 
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
 
-    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        if segue.identifier == "ShowGig" {
+            if let gigVC = segue.destination as? NewGigsViewController {
+                if let indexPath = tableView.indexPathForSelectedRow {
+                    gigVC.gig = gigController.gigs[indexPath.row]
+                }
+                gigVC.gigController = gigController
+            }
+        } else if segue.identifier == "PresentLogIn" {
+            if let loginVC = segue.destination as? LoginViewController {
+                loginVC.gigController = gigController
+            }
+        } else if segue.identifier == "AddGig" {
+            if let gigVC = segue.destination as? NewGigsViewController {
+                gigVC.gigController = gigController
+            }
+        }
     }
-    */
+ 
 
 }
