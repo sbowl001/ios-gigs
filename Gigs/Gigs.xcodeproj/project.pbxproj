@@ -18,6 +18,7 @@
 		A3110DD622A0C40D00A79C7C /* Gig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3110DD522A0C40D00A79C7C /* Gig.swift */; };
 		A3110DD822A0C48500A79C7C /* Bearer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3110DD722A0C48500A79C7C /* Bearer.swift */; };
 		A3110DDA22A0C4C900A79C7C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3110DD922A0C4C900A79C7C /* User.swift */; };
+		A3110DDC22A0C58800A79C7C /* GigController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3110DDB22A0C58800A79C7C /* GigController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		A3110DD522A0C40D00A79C7C /* Gig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gig.swift; sourceTree = "<group>"; };
 		A3110DD722A0C48500A79C7C /* Bearer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bearer.swift; sourceTree = "<group>"; };
 		A3110DD922A0C4C900A79C7C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		A3110DDB22A0C58800A79C7C /* GigController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GigController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,9 +71,8 @@
 				A3110DBD22A0B8FE00A79C7C /* AppDelegate.swift */,
 				A3110DBF22A0B8FE00A79C7C /* ViewController.swift */,
 				A3110DC122A0B8FE00A79C7C /* Main.storyboard */,
-				A3110DD522A0C40D00A79C7C /* Gig.swift */,
-				A3110DD722A0C48500A79C7C /* Bearer.swift */,
-				A3110DD922A0C4C900A79C7C /* User.swift */,
+				A3110DDD22A0C59700A79C7C /* Models */,
+				A3110DDB22A0C58800A79C7C /* GigController.swift */,
 				A3110DD322A0BF5300A79C7C /* NewGigsViewController.swift */,
 				A3110DD122A0BB1100A79C7C /* LoginViewController.swift */,
 				A3110DCF22A0BA5500A79C7C /* GigsTableViewController.swift */,
@@ -80,6 +81,16 @@
 				A3110DC922A0B90000A79C7C /* Info.plist */,
 			);
 			path = Gigs;
+			sourceTree = "<group>";
+		};
+		A3110DDD22A0C59700A79C7C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A3110DD522A0C40D00A79C7C /* Gig.swift */,
+				A3110DD722A0C48500A79C7C /* Bearer.swift */,
+				A3110DD922A0C4C900A79C7C /* User.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -155,6 +166,7 @@
 			files = (
 				A3110DD222A0BB1100A79C7C /* LoginViewController.swift in Sources */,
 				A3110DC022A0B8FE00A79C7C /* ViewController.swift in Sources */,
+				A3110DDC22A0C58800A79C7C /* GigController.swift in Sources */,
 				A3110DBE22A0B8FE00A79C7C /* AppDelegate.swift in Sources */,
 				A3110DD822A0C48500A79C7C /* Bearer.swift in Sources */,
 				A3110DDA22A0C4C900A79C7C /* User.swift in Sources */,
