@@ -34,10 +34,10 @@ class NewGigsViewController: UIViewController {
         guard let title = jobTitleLabel.text,
             let description = jobDescriptionField.text else { return }
         
-        gigController.createGig(title: title, description: description, dueDate: dueDate) { (error) in
-            if let error = error {
-                NSLog("Error creating new gig: \(error)")
-            }
+        gigController.createGig(title: title, description: description, dueDate: dueDate) { (_) in
+//            if let error = error {
+//                NSLog("Error creating new gig: \(error)")
+//            }
             DispatchQueue.main.async {
                 self.navigationController?.popViewController(animated: true)
             }
