@@ -13,6 +13,15 @@ import UIKit
 enum HTTPMethod: String {
     case get = "GET"
     case post = "POST"
+     case put = "PUT"
+    case delete = "DELETE"
+}
+enum NetworkError: Error {
+    case noAuth
+    case badAuth
+    case otherError
+    case badData
+    case noDecode
 }
 
 class GigController {
@@ -77,6 +86,7 @@ class GigController {
         } catch {
             NSLog("Error encoding user object: \(error)")
             completion(error)
+            return
         }
         
         URLSession.shared.dataTask(with: request) {(data, response, error) in
@@ -86,10 +96,12 @@ class GigController {
                 return
             }
             if let error = error {
+                print("Error making loggin network task: \(error.localizedDescription)")
                 completion(error)
                 return
             }
             guard let data = data else {
+                print("error in the data of the login data task: \(NSError())")
                 completion(NSError())
                 return
             }
@@ -107,9 +119,10 @@ class GigController {
         } .resume()
     }
 //    Getting all the gigs the API has. Once you decode the Gigs, set the value of the array of Gigs property you made in this GigController to it, so the table view controller can have a data source.
-    func getAllGigs(completion: @escaping ([String]) -> Void) {
+//    func getAllGigs(completion: @escaping ([String]) -> Void) {
+     func getAllGigs(completion: @escaping (Error?) -> Void) {
         guard let bearer = self.bearer else {
-            completion([])
+            completion(NSError())
             return
         }
         let allGigsUrl = baseURL.appendingPathComponent("gigs")
@@ -121,66 +134,70 @@ class GigController {
         URLSession.shared.dataTask(with: request) {(data, response, error) in
             if let response = response as? HTTPURLResponse,
                 response.statusCode == 401 {
-                completion([])
+                completion(NSError(domain: "", code: response.statusCode, userInfo: nil))
                 return
             }
-            if let _ = error {
-                completion([])
+            if let error = error {
+                completion(error)
                 return
             }
             guard let data = data else {
-                completion([])
+                completion(NSError())
                 return
             }
             let decoder = JSONDecoder()
             
             do {
-                let gigsList = try decoder.decode([String].self, from: data)
-                completion(gigsList)
+                self.gigs = try decoder.decode([Gig].self, from: data)
+                completion(nil)
             } catch {
                 NSLog("Error decoding gig objects: \(error)")
-                completion([])
+                completion(error)
                 return
             }
         } . resume()
     }
 //    Creating a gig and adding it to the API to the API via a POST request. If the request is successful, append the gig to your local array of Gigs.
     
-    func createGig(title: String, description: String, dueDate: Date, completion: @escaping ([String]) -> Void) {
+    func createGig(title: String, description: String, dueDate: Date, completion: @escaping (Error?) -> ()) {
         
         let newGig = Gig(title: title, description: description, dueDate: dueDate)
         
         guard let bearer = self.bearer else {
-            completion([])
+            NSLog("No bearer token")
+            completion(nil)
             return
         }
         let allGigsUrl = baseURL.appendingPathComponent("gigs")
         
         var request = URLRequest(url: allGigsUrl)
         request.httpMethod = HTTPMethod.get.rawValue
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type") // what did this do?
         request.addValue("Bearer \(bearer.token)", forHTTPHeaderField: "Authorization")
+//        encoder.dateEncodingStrategy = .iso8601   <- encodes date as string
+         print("\(bearer.token)")
         
         do {
             let jsonEncoder = JSONEncoder()
             request.httpBody = try jsonEncoder.encode(newGig)
         } catch {
             NSLog("Error encoding gig: \(error)")
-            completion([])
+            completion(error)
             return
         }
         
         URLSession.shared.dataTask(with: request) {(data, response, error) in
             if let response = response as? HTTPURLResponse,
                 response.statusCode == 401 {
-                completion([])
+                completion(NSError(domain: "", code: response.statusCode, userInfo: nil))
                 return
             }
             if let _ = error {
-                completion([])
+                completion(error)
                 return
             }
             self.gigs.append(newGig)
-            completion([])
+            completion(nil)
             
             } . resume()
     }

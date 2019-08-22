@@ -10,7 +10,7 @@ import UIKit
 
 class GigsTableViewController: UITableViewController {
 
-    private var gigs : [String] = []
+//    private var gigs : [String] = []
     
     let gigController = GigController()
     
@@ -25,11 +25,15 @@ class GigsTableViewController: UITableViewController {
         if self.gigController.bearer == nil {
             performSegue(withIdentifier: "PresentLogIn", sender: self)
         }  else {
-            gigController.getAllGigs { (array) in
+            gigController.getAllGigs { error in
+                
+                if let error = error {
+                    NSLog("Error fetching gigs: \(error)")
+                    return
+                }
                 DispatchQueue.main.async {
-                    self.gigs = array
                     self.tableView.reloadData()
-             }
+                }
             }
         }
     }
@@ -39,7 +43,7 @@ class GigsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
  
-        return gigs.count
+        return gigController.gigs.count
     }
 
 
@@ -67,20 +71,23 @@ class GigsTableViewController: UITableViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowGig" {
-            if let gigVC = segue.destination as? NewGigsViewController {
-                if let indexPath = tableView.indexPathForSelectedRow {
-                    gigVC.gig = gigController.gigs[indexPath.row]
-                }
+//            if let gigVC = segue.destination as? NewGigsViewController {
+//                if let indexPath = tableView.indexPathForSelectedRow {
+            guard let gigVC = segue.destination as? NewGigsViewController,
+                let indexPath = tableView.indexPathForSelectedRow else { return }
+                gigVC.gig = gigController.gigs[indexPath.row]
+            
                 gigVC.gigController = gigController
             }
-        } else if segue.identifier == "PresentLogIn" {
+        else if segue.identifier == "PresentLogIn" {
             if let loginVC = segue.destination as? LoginViewController {
                 loginVC.gigController = gigController
             }
         } else if segue.identifier == "AddGig" {
-            if let gigVC = segue.destination as? NewGigsViewController {
+            guard let gigVC = segue.destination as? NewGigsViewController else { return }
+//            if let gigVC = segue.destination as? NewGigsViewController {
                 gigVC.gigController = gigController
-            }
+//            }
         }
     }
  

@@ -12,7 +12,11 @@ class NewGigsViewController: UIViewController {
 
     
     var gigController: GigController!
-    var gig: Gig?
+    var gig: Gig? {
+        didSet{
+            updateViews()
+        }
+    }
     
     
     @IBOutlet weak var jobTitleLabel: UITextField!
@@ -23,16 +27,22 @@ class NewGigsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        updateViews()
       
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateViews()
     }
     
 
     @IBAction func saveButtonTapped(_ sender: Any) {
         
         let dueDate = datePicker.date
-        guard let title = jobTitleLabel.text,
-            let description = jobDescriptionField.text else { return }
+        guard let title = jobTitleLabel.text, !title.isEmpty,
+            let description = jobDescriptionField.text, !description.isEmpty
+            else { return }
         
         gigController.createGig(title: title, description: description, dueDate: dueDate) { (_) in
 //            if let error = error {
@@ -45,6 +55,12 @@ class NewGigsViewController: UIViewController {
     }
     
     func updateViews() {
+        
+        //           guard let selectedGig = gig,
+//        isViewLoaded else {
+//            title = "Add New Gig"
+//            return
+//        }
         if gig != nil {
             guard let gig = gig else { return }
             jobTitleLabel.text = gig.title
